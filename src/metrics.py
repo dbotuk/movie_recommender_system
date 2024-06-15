@@ -92,4 +92,5 @@ def rmse_score(y_true, y_pred):
     """
     y_pred = y_pred.get_rating_matrix()
     y_true = y_true.get_rating_matrix()
-    return np.sqrt(np.nansum((y_pred - y_true)**2))
+
+    return np.sqrt(np.mean((y_pred - y_true)**2))
