@@ -33,6 +33,6 @@ class MeanRatingRecommender:
         for movie in new_movies:
             predictions.loc[movie] = [random.randint(1, 6) for user in X_test.get_users()]
 
-        predictions = predictions * X_test.get_rating_matrix()
+        predictions = predictions.round() * X_test.get_rating_matrix()
 
         return RatingMatrix(predictions)

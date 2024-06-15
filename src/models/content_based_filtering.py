@@ -52,6 +52,6 @@ class ContentBasedFilteringRecommender:
         predictions_df.reset_index(drop=True, inplace=True)
 
         predictions_df = predictions_df.pivot(index='MovieID', columns='UserID', values='Rating')
-        predictions_df = predictions_df * X_test.get_rating_matrix()
+        predictions_df = predictions_df.round() * X_test.get_rating_matrix()
 
         return RatingMatrix(predictions_df)
