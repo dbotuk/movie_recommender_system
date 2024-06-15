@@ -1,4 +1,5 @@
 import pandas as pd
+import random
 from src.utils import RatingMatrix
 
 
@@ -10,20 +11,28 @@ class MeanRatingRecommender:
         """
         Train a Mean Rating Recommender model
         """
-        mean_ratings = pd.DataFrame()
-        mean_ratings['Rating'] = train_ratings.get_rating_matrix().mean(axis=1)
+        mean_ratings = train_ratings.get_rating_matrix().mean(axis=1).reset_index()
 
-        self.recommendations = mean_ratings
+        mean_ratings.columns = ['MovieID', 'Rating']
+        mean_ratings.set_index('MovieID', inplace=True)
 
-    def predict(self, users):
+        self.recommendations = mean_ratings.T
+
+    def predict(self, X_test):
         """
         Provide a Mean Rating Recommendations
         """
-        temp_rec = self.recommendations.T
-        repeated_rows = temp_rec.loc[temp_rec.index.repeat(len(users))].reset_index(drop=True)
+        repeated_rows = self.recommendations.loc[self.recommendations.index.repeat(len(X_test.get_users()))].reset_index(drop=True)
 
         predictions = pd.DataFrame(repeated_rows)
-        predictions['UserID'] = users
+        predictions['UserID'] = X_test.get_users()
         predictions.set_index('UserID', inplace=True)
+        predictions = predictions.T
+        predictions = predictions.loc[list(set(X_test.get_movies()) & set(predictions.index))]
+        new_movies = list(set(X_test.get_movies()) - set(predictions.index))
+        for movie in new_movies:
+            predictions.loc[movie] = [random.randint(1, 6) for user in X_test.get_users()]
 
-        return RatingMatrix(predictions.T)
+        predictions = predictions * X_test.get_rating_matrix()
+
+        return RatingMatrix(predictions)
