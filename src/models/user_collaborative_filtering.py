@@ -1,26 +1,27 @@
 import numpy as np
 import pandas as pd
-from src.utils import RatingMatrix
+from src.utils import RatingMatrix, make_binary_matrix
 
 
 class UserCollaborativeFiltering:
     def __init__(self):
         self.user_similarity = None
         self.train_matrix = None
+        self.binary_matrix = None
 
     def fit(self, train_ratings):
         """
         Fit the model by calculating the user-user similarity matrix.
         """
         self.train_matrix = train_ratings.get_rating_matrix()
-        self.user_similarity = self._calculate_user_similarity(self.train_matrix)
+        self.binary_matrix = make_binary_matrix(self.train_matrix).get_rating_matrix()
+        self.user_similarity = self._calculate_user_similarity(self.binary_matrix)
 
     def _calculate_user_similarity(self, matrix):
         """
         Calculate cosine similarity between users.
         """
-        matrix_filled = matrix.fillna(0)
-        similarity = np.dot(matrix_filled.T, matrix_filled)
+        similarity = np.dot(matrix.T, matrix)
         norms = np.array([np.sqrt(np.diagonal(similarity))])
         return similarity / norms / norms.T
 
@@ -31,30 +32,29 @@ class UserCollaborativeFiltering:
         if user_id not in self.train_matrix.columns or movie_id not in self.train_matrix.index:
             raise ValueError(f"User {user_id} or Movie {movie_id} not found in the training data.")
 
-        # Get the column index for the user
         user_idx = self.train_matrix.columns.get_loc(user_id)
-
-        # Extract the similarities for the user
         user_sim = self.user_similarity[user_idx]
+        movie_ratings = self.train_matrix.loc[movie_id]
 
-        # Extract the ratings for the movie
-        ratings = self.train_matrix.loc[movie_id]
-
-        if ratings.isna().all():
+        if movie_ratings.isna().all():
             return np.nan  # No ratings available
 
         mean_user_rating = self.train_matrix[user_id].mean()
 
-        mask = ~ratings.isna()
+        # Create a mask for movies rated by other users
+        mask = ~movie_ratings.isna()
         if mask.sum() == 0:
             return mean_user_rating  # No neighbors have rated the movie
 
-        # Align the mean calculation with the other users who have rated this movie
+        # Neighbors' ratings for the specific movie
         neighbor_ratings = self.train_matrix.loc[movie_id, mask]
-        user_mean = self.train_matrix.loc[:, mask].mean()
 
+        # Average rating of each user who rated the movie
+        user_means = self.train_matrix.loc[:, mask].mean(axis=0)
+
+        # Calculate similarity-weighted sum
         similarity_sum = np.sum(user_sim[mask])
-        weighted_sum = np.sum(user_sim[mask] * (neighbor_ratings - user_mean))
+        weighted_sum = np.sum(user_sim[mask] * (neighbor_ratings - user_means))
 
         prediction = mean_user_rating + weighted_sum / (similarity_sum + 1e-9)
 

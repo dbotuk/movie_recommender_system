@@ -1,26 +1,28 @@
 import numpy as np
 import pandas as pd
-from src.utils import RatingMatrix
+from src.utils import RatingMatrix, make_binary_matrix
 
 
 class ItemCollaborativeFiltering:
     def __init__(self):
         self.item_similarity = None
         self.train_matrix = None
+        self.binary_matrix = None
 
     def fit(self, train_ratings):
         """
         Fit the model by calculating the item-item similarity matrix.
         """
         self.train_matrix = train_ratings.get_rating_matrix()
-        self.item_similarity = self._calculate_item_similarity(self.train_matrix)
+        self.binary_matrix = make_binary_matrix(self.train_matrix).get_rating_matrix()
+        self.item_similarity = self._calculate_item_similarity(self.binary_matrix)
+
 
     def _calculate_item_similarity(self, matrix):
         """
         Calculate cosine similarity between items.
         """
-        matrix_filled = matrix.fillna(0)
-        similarity = np.dot(matrix_filled, matrix_filled.T)
+        similarity = np.dot(matrix, matrix.T)
         norms = np.array([np.sqrt(np.diagonal(similarity))])
         return similarity / norms / norms.T
 
@@ -31,13 +33,8 @@ class ItemCollaborativeFiltering:
         if user_id not in self.train_matrix.columns or movie_id not in self.train_matrix.index:
             raise ValueError(f"User {user_id} or Movie {movie_id} not found in the training data.")
 
-        # Get the row index for the movie
         movie_idx = self.train_matrix.index.get_loc(movie_id)
-
-        # Extract the similarities for the movie
         movie_sim = self.item_similarity[movie_idx]
-
-        # Extract the ratings by the user
         user_ratings = self.train_matrix[user_id]
 
         if user_ratings.isna().all():
@@ -49,9 +46,7 @@ class ItemCollaborativeFiltering:
         if mask.sum() == 0:
             return mean_movie_rating  # No neighbors have rated the movie
 
-        # Align the mean calculation with the movies that have been rated by the user
         neighbor_ratings = self.train_matrix.loc[mask, user_id]
-        # Using 'mean(axis=0)' for movie averages across all users
         movie_means = self.train_matrix.loc[mask].mean(axis=1)
 
         similarity_sum = np.sum(movie_sim[mask])
