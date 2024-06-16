@@ -37,28 +37,23 @@ class UserCollaborativeFiltering:
         movie_ratings = self.train_matrix.loc[movie_id]
 
         if movie_ratings.isna().all():
-            return np.nan  # No ratings available
+            return np.nan
 
         mean_user_rating = self.train_matrix[user_id].mean()
 
-        # Create a mask for movies rated by other users
         mask = ~movie_ratings.isna()
         if mask.sum() == 0:
             return mean_user_rating  # No neighbors have rated the movie
 
-        # Neighbors' ratings for the specific movie
         neighbor_ratings = self.train_matrix.loc[movie_id, mask]
 
-        # Average rating of each user who rated the movie
         user_means = self.train_matrix.loc[:, mask].mean(axis=0)
 
-        # Calculate similarity-weighted sum
         similarity_sum = np.sum(user_sim[mask])
         weighted_sum = np.sum(user_sim[mask] * (neighbor_ratings - user_means))
 
         prediction = mean_user_rating + weighted_sum / (similarity_sum + 1e-9)
 
-        # Cap the predicted rating between 1 and 5
         prediction = max(1, min(prediction, 5))
 
         return prediction
