@@ -38,7 +38,7 @@ class ItemCollaborativeFiltering:
         user_ratings = self.train_matrix[user_id]
 
         if user_ratings.isna().all():
-            return np.nan  # No ratings available
+            return np.nan
 
         mean_movie_rating = self.train_matrix.loc[movie_id].mean()
 
@@ -54,7 +54,6 @@ class ItemCollaborativeFiltering:
 
         prediction = mean_movie_rating + weighted_sum / (similarity_sum + 1e-9)
 
-        # Cap the predicted rating between 1 and 5
         prediction = max(1, min(prediction, 5))
 
         return prediction
