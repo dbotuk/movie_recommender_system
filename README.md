@@ -109,14 +109,9 @@ In general such an approach performed better than the baseline, but not so signi
 
 ## Item-to-item/user-to-user collaborative filtering
 In addition to other methods, we implemented item-to-item and user-to-user collaborative filtering approaches for movie recommendations.
+
 These techniques demonstrated performance that was broadly consistent with each other. Both item-to-item and user-to-user collaborative
 filtering methods produced lower RMSE compared to other models, indicating improved accuracy in predicting individual ratings. Despite the lower RMSE,
-these approaches did not show significant improvements in ranking-based metrics such as MAP, MRR,
-and NDCG when compared to the baseline model. This suggests that while the predictions were more accurate on average,
-the ranking and relevance of the recommendations were not substantially enhanced. The collaborative filtering approaches
-are relatively straightforward to implement, as they primarily rely on the existing rating matrix and do not necessitate
-extensive additional data or feature engineering. This simplicity can be advantageous in scenarios where data is sparse or feature extraction is complex.
+these approaches did not show significant improvements in ranking-based metrics such as MAP, MRR, and NDCG when compared to the baseline model. This suggests that while the predictions were more accurate on average, the ranking and relevance of the recommendations were not substantially enhanced. The collaborative filtering approaches are relatively straightforward to implement, as they primarily rely on the existing rating matrix and do not necessitate extensive additional data or feature engineering. This simplicity can be advantageous in scenarios where data is sparse or feature extraction is complex.
 
-One of the notable limitations is the computational intensity associated with these methods.
-Constructing the similarity matrices and generating predictions becomes computationally expensive as the dataset size increases.
-Particularly for datasets with more than 1,000 samples, the time and resources required to compute all ratings and maintain the similarity matrix can be prohibitive.
+One of the notable limitations is the computational intensity associated with these methods. Constructing the similarity matrices and generating predictions becomes computationally expensive as the dataset size increases. Particularly for datasets with more than 1,000 samples, the time and resources required to compute all ratings and maintain the similarity matrix can be prohibitive.
