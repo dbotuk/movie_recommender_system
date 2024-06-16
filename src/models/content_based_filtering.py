@@ -44,6 +44,17 @@ class ContentBasedFilteringRecommender:
         predictions.index.names = ['MovieID']
         predictions.columns.names = ['UserID']
         predictions.update(self.centralized_ratings)
+
+        # cold-start
+        # baseline = MeanRatingRecommender()
+        # baseline.train(RatingMatrix(self.ratings))
+        # cold_start_movies = self.ratings.index
+        # cold_start_users = [user for user in X_test.get_users() if user not in self.ratings.columns]
+        # to_do_cold_start = pd.DataFrame(np.ones((len(cold_start_movies), len(cold_start_users))), index=cold_start_movies, columns=cold_start_users)
+        # to_do_cold_start.index.names = ['MovieID']
+        # to_do_cold_start.columns.names = ['UserID']
+        # cold_start = baseline.predict(RatingMatrix(to_do_cold_start))
+        # predictions.update(cold_start.get_rating_matrix())
         predictions = predictions.T
 
         similarity_matrix = self.similarity_matrix_df
