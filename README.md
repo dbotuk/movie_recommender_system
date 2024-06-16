@@ -48,6 +48,8 @@ It is quite easy from both the implementation and interpretation perspective. Th
 However, such type of recommendations are deprived of the personalization. It also neglects the niche items.
 
 ## PageRank implementation results
+We've implemented Personalized Page Rank algorithm to test its capabilities in solving recommendation problem. 
+
 The conclusion is that PageRank is not suitable for this problem as a standalone solution. This is because PageRank primarily considers the link structure (i.e., the user-movie interactions) without understanding the content or features of the movies or users. Our dataset contains information about movies (genres) and users (demographics, occupation) which are not leveraged by the algorithm.
 
 Another problem is that the dataset is sparse, meaning most users have rated only a small subset of movies (this fact was fixed during the exploratory data analysis). PageRank relies on the link structure, and sparse data can lead to a poor representation of user preferences and weak connections in the bipartite graph.
