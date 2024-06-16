@@ -44,6 +44,7 @@ class ContentBasedFilteringRecommender:
         predictions.index.names = ['MovieID']
         predictions.columns.names = ['UserID']
         predictions.update(self.centralized_ratings)
+
         predictions = predictions.T
 
         similarity_matrix = self.similarity_matrix_df
