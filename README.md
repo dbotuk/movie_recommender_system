@@ -82,3 +82,14 @@ We use a popularity-based recommender as a baseline. So, we recommend TOP-10 pop
 It is quite easy from both the implementation and interpretation perspective. There is no problem to make the recommendations for new users.
 
 However, such type of recommendations are deprived of the personalization. It also neglects the niche items.
+
+## PageRank implementation results
+We've implemented Personalized Page Rank algorithm to test its capabilities in solving recommendation problem. 
+
+The conclusion is that PageRank is not suitable for this problem as a standalone solution. This is because PageRank primarily considers the link structure (i.e., the user-movie interactions) without understanding the content or features of the movies or users. Our dataset contains information about movies (genres) and users (demographics, occupation) which are not leveraged by the algorithm.
+
+Another problem is that the dataset is sparse, meaning most users have rated only a small subset of movies (this fact was fixed during the exploratory data analysis). PageRank relies on the link structure, and sparse data can lead to a poor representation of user preferences and weak connections in the bipartite graph.
+
+The last but not the least problem is that PageRank tends to favor nodes with more connections (by its design), which in the context of movies can lead to popular movies being recommended repeatedly, even if they are not relevant to a specific user's preferences.
+
+
