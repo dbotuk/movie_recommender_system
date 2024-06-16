@@ -92,7 +92,7 @@ Another problem is that the dataset is sparse, meaning most users have rated onl
 
 The last but not the least problem is that PageRank tends to favor nodes with more connections (by its design), which in the context of movies can lead to popular movies being recommended repeatedly, even if they are not relevant to a specific user's preferences.
 
-# Content-based filtering
+## Content-based filtering
 We've implemented a content-based filtering approach for movie recommendations.
 
 The main algorithm can be splitted to the following steps:
@@ -105,4 +105,18 @@ The main algorithm can be splitted to the following steps:
 
 For this approach we scrapped additional data about movies, but it didn't provide significant improvement.
 
-In general such approach performed better than the baseline, but not so significantly.
+In general such an approach performed better than the baseline, but not so significantly.
+
+## Item-to-item/user-to-user collaborative filtering
+In addition to other methods, we implemented item-to-item and user-to-user collaborative filtering approaches for movie recommendations.
+These techniques demonstrated performance that was broadly consistent with each other. Both item-to-item and user-to-user collaborative
+filtering methods produced lower RMSE compared to other models, indicating improved accuracy in predicting individual ratings. Despite the lower RMSE,
+these approaches did not show significant improvements in ranking-based metrics such as MAP, MRR,
+and NDCG when compared to the baseline model. This suggests that while the predictions were more accurate on average,
+the ranking and relevance of the recommendations were not substantially enhanced. The collaborative filtering approaches
+are relatively straightforward to implement, as they primarily rely on the existing rating matrix and do not necessitate
+extensive additional data or feature engineering. This simplicity can be advantageous in scenarios where data is sparse or feature extraction is complex.
+
+One of the notable limitations is the computational intensity associated with these methods.
+Constructing the similarity matrices and generating predictions becomes computationally expensive as the dataset size increases.
+Particularly for datasets with more than 1,000 samples, the time and resources required to compute all ratings and maintain the similarity matrix can be prohibitive.
