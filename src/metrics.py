@@ -6,7 +6,7 @@ def map_score(y_true, y_pred, top=10):
     Calculate Mean Average Precision
     """
     result = 0
-    for user in y_pred.get_rating_matrix().columns:
+    for user in y_true.get_users():
         top_pred = y_pred.get_user_ratings(user).sort_values(ascending=False).head(top).index
         top_true = y_true.get_user_ratings(user).sort_values(ascending=False).head(top).index
         result += average_precision(top_true, top_pred)
@@ -32,7 +32,7 @@ def mrr_score(y_true, y_pred, top=10):
     Calculate Mean Reciprocal Rank
     """
     scores = []
-    for user in y_pred.get_rating_matrix().columns:
+    for user in y_true.get_users():
         sorted_pred = y_pred.get_user_ratings(user).sort_values(ascending=False).head(top).index
         sorted_true = y_true.get_user_ratings(user).sort_values(ascending=False).head(top).index
         scores.append(reciprocal_rank(sorted_pred, sorted_true))
@@ -54,7 +54,7 @@ def ndcg_score(y_true, y_pred, top=10):
     Calculate the Normalized Discounted Cumulative Gain (NDCG)
     """
     ndcg_values = []
-    for user in y_pred.get_rating_matrix().columns:
+    for user in y_true.get_users():
         top_pred = y_pred.get_user_ratings(user).sort_values(ascending=False).head(top).index
         top_true = y_true.get_user_ratings(user).sort_values(ascending=False).head(top).index
 
@@ -92,4 +92,5 @@ def rmse_score(y_true, y_pred):
     """
     y_pred = y_pred.get_rating_matrix()
     y_true = y_true.get_rating_matrix()
-    return np.sqrt(np.nansum((y_pred[y_true.notna()] - y_true[y_true.notna()])**2))
+
+    return np.sqrt(np.mean((y_pred - y_true)**2))
