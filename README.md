@@ -92,4 +92,17 @@ Another problem is that the dataset is sparse, meaning most users have rated onl
 
 The last but not the least problem is that PageRank tends to favor nodes with more connections (by its design), which in the context of movies can lead to popular movies being recommended repeatedly, even if they are not relevant to a specific user's preferences.
 
+# Content-based filtering
+We've implemented a content-based filtering approach for movie recommendations.
 
+The main algorithm can be splitted to the following steps:
+1. Take the dataset with movie information
+2. Vectorize the data using TF-IDF approach
+3. Calculate similarity matrix based on the previous results.
+4. Take the training dataset of ratings.
+4. Do the dot product of training dataset with similarity matrix.
+5. Evaluate the results on test dataset.
+
+For this approach we scrapped additional data about movies, but it didn't provide significant improvement.
+
+In general such approach performed better than the baseline, but not so significantly.
