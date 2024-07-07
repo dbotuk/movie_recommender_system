@@ -11,7 +11,7 @@ class FunkSVDRecommender:
         self.users_matrix = pd.DataFrame()
         self.movies_matrix = pd.DataFrame()
 
-    def train(self, train_ratings, num_factors, max_steps=100, alpha=0.01, lambda_=0.01, exp=1e-5):
+    def train(self, train_ratings, num_factors, alpha=0.01, lambda_=0.01, max_steps=100, exp=1e-5):
         """
         Train a Funk SVD model
         """
