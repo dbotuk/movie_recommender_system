@@ -107,6 +107,7 @@ For this approach we scrapped additional data about movies, but it didn't provid
 
 In general such an approach performed better than the baseline, but not so significantly.
 
+
 ## Item-to-item/user-to-user collaborative filtering
 In addition to other methods, we implemented item-to-item and user-to-user collaborative filtering approaches for movie recommendations.
 
@@ -115,3 +116,21 @@ filtering methods produced lower RMSE compared to other models, indicating impro
 these approaches did not show significant improvements in ranking-based metrics such as MAP, MRR, and NDCG when compared to the baseline model. This suggests that while the predictions were more accurate on average, the ranking and relevance of the recommendations were not substantially enhanced. The collaborative filtering approaches are relatively straightforward to implement, as they primarily rely on the existing rating matrix and do not necessitate extensive additional data or feature engineering. This simplicity can be advantageous in scenarios where data is sparse or feature extraction is complex.
 
 One of the notable limitations is the computational intensity associated with these methods. Constructing the similarity matrices and generating predictions becomes computationally expensive as the dataset size increases. Particularly for datasets with more than 1,000 samples, the time and resources required to compute all ratings and maintain the similarity matrix can be prohibitive.
+
+
+## Multi-armed bandit approach 
+We tried to implement a recommender system using multi-armed bandit (MAB) algorithms, specifically focusing on the LinUCB algorithm. The main goal was to create a recommendation system that balances exploration and exploitation to optimize movie recommendations for users.
+
+The model's choice was done because of the training speed and its performance compared to naive non-contextual Epsilon Greedy and UCBBandit algorithms (we've tested them also). 
+LinUCB algorithm implementation is based on the contextualbandits Python library. Overall approach was chosen for its ability to handle contextual information, which is crucial for personalized recommendations.
+
+The metrics achieved are the next:
+* LinUCB MAP: 0.19589655639717443
+* LinUCB MRR: 0.2297836
+* LinUCB NDCG: 0.16184333990828204
+
+A MAP of indicates the mean precision of the algorithm when averaged over all queries. A value of  ~0.195 is poor and suggests that, on average, the precision of the recommended items is about 20%.
+An MRR of 0.23 reflects low precision telling us that relevant items are, on average, ranked fairly low in the recommendation list (~8-9 place).
+NDCG evaluates the quality of the ranking by considering the position of relevant items. An NDCG of 0.16 suggests that the overall ranking of relevant items is not effective
+
+Despite many experiments conducted, the final metrics are not high and showing results similar to PageRank which works much faster compared to MAB approach. It suggestes that MAB approach is not suitable for our use case (little context and lack of powerful computational resources to analyze 'arms' for bandits). 
