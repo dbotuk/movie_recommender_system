@@ -4,3 +4,5 @@ scikit-learn==1.4.1.post1
 IMDbPY==2022.7.9
 networkx==2.8.2
 scipy==1.13.1
+contextualbandits==0.1.8.5
+scikit-surprise==1.1.4
